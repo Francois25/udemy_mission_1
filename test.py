@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
 import questionnaire
+import os
 
 def additionner(a,b):
     return a+b
@@ -48,5 +49,21 @@ class TestQuestion(unittest.TestCase):
         with patch("builtins.input", return_value="3"):
             self.assertFalse(q.poser(1, 1))
 
-            
+
+class TestQuestionnaire(unittest.TestCase):
+    def test_questionnaire_lancer_animaux_chien_debutant(self):
+        filename = os.path.join("test_data", "animaux_leschiens_debutant.json")
+        q = questionnaire.Questionnaire.from_json_file(filename)
+        self.assertIsNotNone(q)
+
+    # nb de questions
+        self.assertEqual(len(q.questions), 10)
+    # titre, categorie, difficulte
+        self.assertEqual(q.titre, "Les Chiens")
+        self.assertEqual(q.categorie, "Animaux")
+        self.assertEqual(q.difficulte, "débutant")
+    # patcher le input -> forcer de répondre toujours à 1 et résultat toujours 4
+        with patch("builtins.input", return_value="1"):
+            self.assertEqual(q.lancer(), 2)
+
 unittest.main()

@@ -1,7 +1,10 @@
 import unittest
 from unittest.mock import patch
 import questionnaire
+import questionnaire_import
 import os
+import json
+
 
 def additionner(a,b):
     return a+b
@@ -83,4 +86,35 @@ class TestQuestionnaire(unittest.TestCase):
         self.assertIsNone(q)
 
 
+class TestImportQuestionnaire(unittest.TestCase):
+    def test_import_questionnaire(self):
+        questionnaire_import.generate_json_file("Animaux", "Les chats", "https://www.kiwime.com/oqdb/files/1050634995/OpenQuizzDB_050/openquizzdb_50.json")
+        
+        filenames = ("animaux_leschats_confirme.json", "animaux_leschats_debutant.json", "animaux_leschats_expert.json")
+
+        for filename in filenames:
+            self.assertTrue(os.path.isfile(filename))
+            file = open(filename, "r")
+            json_data = file.read()
+            file.close()
+            try:
+                data = json.loads(json_data)
+            except:
+                self.fail("Problème de désserialisation pour le fichier : " + filename)
+            
+            self.assertIsNotNone(data.get("titre"))
+            self.assertIsNotNone(data.get("questions"))
+            self.assertIsNotNone(data.get("categorie"))
+            self.assertIsNotNone(data.get("difficulte"))
+
+            for question in data.get("questions"):
+                self.assertIsNotNone(question.get("titre"))
+                self.assertIsNotNone(question.get("choix"))
+
+                for choix in question.get("choix"):
+                    self.assertGreater(len(choix[0]), 0)
+                    self.assertTrue(isinstance(choix[1], bool))
+                bonne_reponse = [i[0] for i in question.get("choix") if i[1]]
+                self.assertEqual(len(bonne_reponse), 1)
+       
 unittest.main()

@@ -66,4 +66,21 @@ class TestQuestionnaire(unittest.TestCase):
         with patch("builtins.input", return_value="1"):
             self.assertEqual(q.lancer(), 2)
 
+    def test_questionnaire_format_invalide(self):
+        filename = os.path.join("test_data", "format_invalide1.json")
+        q = questionnaire.Questionnaire.from_json_file(filename)
+        self.assertIsNotNone(q)
+        self.assertEqual(q.categorie, "inconnue")
+        self.assertEqual(q.difficulte, "inconnue")
+        self.assertIsNotNone(q.questions)
+
+        filename = os.path.join("test_data", "format_invalide2.json")
+        q = questionnaire.Questionnaire.from_json_file(filename)
+        self.assertIsNone(q)
+
+        filename = os.path.join("test_data", "format_invalide3.json")
+        q = questionnaire.Questionnaire.from_json_file(filename)
+        self.assertIsNone(q)
+
+
 unittest.main()

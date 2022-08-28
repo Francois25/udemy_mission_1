@@ -57,10 +57,19 @@ class Questionnaire:
         self.difficulte = difficulte
 
     def fromdata(data):
+        if not data.get("questions"):
+            return None
+            
         questionnaire_data_questions = data["questions"]
         questions = [Question.fromdata(i) for i in questionnaire_data_questions]
         # supprime les questions None qui n'ont pas pu être créées
         questions = [i for i in questions if i]
+        if not data.get("categorie"):
+            data["categorie"] = "inconnue"
+        if not data.get("difficulte"):
+            data["difficulte"] = "inconnue"
+        if not data.get("titre"):
+            return None
 
         return Questionnaire(questions, data["categorie"], data["titre"], data["difficulte"])
 

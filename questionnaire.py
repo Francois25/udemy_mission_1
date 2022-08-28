@@ -95,15 +95,15 @@ class Questionnaire:
         print("-----------")
         return score
 
+if __name__ == "__main__":
+    # Questionnaire.from_json_file("animaux_leschiens_debutant.json").lancer()
 
-# Questionnaire.from_json_file("animaux_leschiens_debutant.json").lancer()
+    if len(sys.argv) < 2:
+        print("erreur : vous devez spécifier le nom du fichier json à charger")
+        exit(0)
 
-if len(sys.argv) < 2:
-    print("erreur : vous devez spécifier le nom du fichier json à charger")
-    exit(0)
+    json_filename = sys.argv[1]
+    questionnaire = Questionnaire.from_json_file(json_filename)
 
-json_filename = sys.argv[1]
-questionnaire = Questionnaire.from_json_file(json_filename)
-
-if questionnaire:
-    questionnaire.lancer()
+    if questionnaire:
+        questionnaire.lancer()

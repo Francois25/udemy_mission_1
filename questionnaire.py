@@ -9,8 +9,11 @@ class Question:
         self.bonne_reponse = bonne_reponse
 
     def fromdata(data):
+        # Transforme les données du json : Titre, bonne réponse, etc...
         choix = [i[0] for i in data["choix"]]
+        # Trouve le bon choix dans le json en fonction du bool "True"
         bonne_reponse = [i[0] for i in data["choix"] if i[1]]
+        # Si pas de bonne réponse ou plusieurs bonne réponse dans le json -> pb dans les données
         if len(bonne_reponse) != 1:
             return None
         q = Question(data["titre"], choix, bonne_reponse[0])
@@ -40,12 +43,12 @@ class Question:
             reponse_int = int(reponse_str)
             if min <= reponse_int <= max:
                 return reponse_int
-
             print("ERREUR : Vous devez rentrer un nombre entre", min, "et", max)
         except:
             print("ERREUR : Veuillez rentrer uniquement des chiffres")
         return Question.demander_reponse_numerique_utlisateur(min, max)
     
+
 class Questionnaire:
     def __init__(self, questions, categorie, titre, difficulte):
         self.questions = questions
@@ -56,7 +59,9 @@ class Questionnaire:
     def fromdata(data):
         questionnaire_data_questions = data["questions"]
         questions = [Question.fromdata(i) for i in questionnaire_data_questions]
-        
+        # supprime les questions None qui n'ont pas pu être créées
+        questions = [i for i in questions if i]
+
         return Questionnaire(questions, data["categorie"], data["titre"], data["difficulte"])
 
     def from_json_file(filename):
